@@ -1,0 +1,51 @@
+// https://adventofcode.com/2022/day/6
+// (part 2)
+
+const MARKER_LENTH: usize = 14;
+
+fn find_marker(signal: &str) -> usize {
+    assert!(signal.len() >= MARKER_LENTH);
+
+    let mut marker_end_pos: usize = 0; // return 0 if not found
+    let mut packet: std::collections::HashSet<char> = std::collections::HashSet::new();
+    for i_signal in 0..signal.len() - MARKER_LENTH {
+        packet.clear();
+        for i in i_signal..i_signal + MARKER_LENTH {
+            let c: char = signal.chars().nth(i).unwrap();
+            packet.insert(c);
+        }
+        if packet.len() == MARKER_LENTH {
+            marker_end_pos = i_signal + MARKER_LENTH; // not -1 cause indices start at 1
+            break;
+        }
+    }
+
+    return marker_end_pos;
+}
+
+fn main() {
+    // example
+    assert_eq!(19, find_marker("mjqjpqmgbljsphdztnvjfqwrcgsmlb"));
+    assert_eq!(23, find_marker("bvwbjplbgvbhsrlpgdmjqwftvncz"));
+    assert_eq!(23, find_marker("nppdvjthqldpwncqszvftbrmjlhg"));
+    assert_eq!(29, find_marker("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg"));
+    assert_eq!(26, find_marker("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"));
+    //// user puzzle input
+    assert_eq!(2383, find_marker("tzltzltthfthtdtstftbfbnffdjjvnvcccnznpndppsvvlnvlnvndntnllwffvwwcpwccssqbqnbbwzbwwfjjscspspfsfvvzjvvmjvjwjljbbbqtbbcqbccdqcdcpddnvnjvvqwwbrbggjllhbbzlblrrrcwwrfrmffgddfsddnqnqpnnmzzwlzwzqwqgqnngnfnvnhvvfnvvszzrbrqbqnbbrsbsvssgngwgqwqbqsbsvbbdvdfvdvbbqlqdlqdllnppwcclwlvwlwjlwwdjjjcschhhmrrnnrznzlnnwmnwnfngghngnpggmrrzrttdbdtddjhdhrrqddnhnjjntjtbtmtffwcfcnfcnfnjjfnjfjjhrhhgfgttgmttltfllfqfnqqcbbrlblrbrcrssrllhddmnddmcdddvttfdfqfmqqcncggczczdccvhcvcjvvgnnqttltcchzhjjwmmqvqtqnqbbhddcqdccnwccttgwwzssncncjjprjjpbprrndnrnrhnhrnhngnhhbjbccpmpmrppjvpjpqjjsvjjhttcclmmqzzlggtqqqgdqqbhhtmmqfmqmwmjwmjmmnsmsvsrrvpvhhtshhhmqmdqqqqlfffwgwhwjjrfjfmfrmffgzzjvzznqqwggcvcnvvcpvpjpjbpbrpbrrzhhcffqqlzzrmzrmzmzrrqdqrqnqrnrnqnrnsrrnjrrgllgqlljldjjmvvqbqhhsmsmddsfdddcmmphhtjhjzhjjjhcjjzppwhwvvdnvnvpnvnlnvnffrjjtzzdqzzngzgqghhmvvgwwqhwhlhvvfzzdpzddtbdtbtvtlvlqlllvvdvsdsslccbscsbbcggldlvvdccdscdsdzsddpggcfggnffpjpnpcncfcqqlvvszzbpbqbcqczcqzcqzqqlrlwwbgglrrbgbhhlbbsffrprtpppdwdhwhbbpssvbvnntbbfnfddmmfcfcjfftbfbdbccngcgjcjtjftjffrwwtwlwddczcnzczpzcpccrqcrczrzcrzzhnntgtqgtgztgzzcpphshwswfwqqnzngzzbpzzpqpzqznzdzmzqqjzzhnhvnnqjnnrdrcctdtppsffzvvwvbbpttsrsspsddfvvfllrtlljpjlplcctthbbgbqgbgmmpwpvvghvhfhwfwcwvwrvwrvvcgccdncddbmbmfmlffgqggrzgzhhzfzdfzfhhzdhzhjzjhhbffrtrjtthssbpspddpttrggdndsnnjwwzrwrvvmqvmvdvhvjvnnqmmhrhrzzzwttnftfddsdfsfjsjcccvhvgvgzvgzvzbvvhwhbbpccfjfllgmlggtbggdsgsmmmnznqnhqhrqhrrtthwhqqvzqvvvqgqffpvptvpvwvbvsscsnnhlnhhzrzjrjrllcffpqpbpsbbflblppqffbqqpttccdgcgdgfdfgdgjddjljpljppdspddflftllhchmcmwcwddrqqsdsswwmwwwjdjvdvwwcgcddmhhqtqvqmvvnffqppnvpphpnnshsmhmdhmdddlnlmnmsnnpttlfttnqnhqnqrnrddplplbpbdpdhppccbnbwwpwzwgwdgdnggcmmtnmnznmzmwmrmtrrjppjgjmggndgnnjzzrczzftztzgzvgvddgmdgmgpmmgjmmnrrmvmnvvhqqggsnnplnlnbbrcbbpphssnqsnspnncfchhvjjdjvjfjddbjbddhlllpdnrhtzhqpphzfbjclncdlrbtzhcwslpnstdvjslnzfrvfdlmpgpfhrqtjvqvjlqgdcjrbjtjrgvbfwjzsvrbmffnhvjqnshvdjbgwmpwlfjznngzpqbvlztnvgvjsnwvhpfwbhfsmjgwwjdrrwbtvpwtzvjfhwrmnrhdsvgpgdsfgndmffqfplsgjrsvztzlznqsrbldbmmhqmjtrzscrbwlpgztlrvllprnhzsvtnvwzmjwqhqpjqhntcrscwcdnwzpvbdczzcmzrmdwthdtszqzftcsfbwfqggpcntfrgwpmjpdzjnczwcjmdjnrqjfwqbznznmcdvzqlpqschnmcfqjjrjwfmqqftfdhdzffvshqbmrgrpvlgqcgsbsngttvcpjswdgrhbblrhjllfbzngqjzzbdwtnlnrbpftvwbmrhvcnntdrbvtrtpcsqdsrvpsgggfpwcbzhwhwmmmmmgjzgdtwnzjdwjfljghbjvjnsgshmdpztnbbrnwfvzhtzqpzttftdmcmqzlnrgncwwtpwqrgmpmwwchwhbbbblcndbsrrqtnztcmqhvdwfcswnswvhqdtqfdrhjgczqvrzqczmnpcgbwntjvlsfrzrrjtsvfzfmbwwsftwqvttpjvbggrlcspnfhwwmrhdbbhdcjvmrhppvcmtmfhszjlcjjsdqfvjttcmffwzfpmjmjzhcrqmhhwzhjlnwphvvhmrbllsvpjljthjndffrdbmdjncnmdtcwfwjdwnrdlvqsbzczlhwrtpnzfwzzwbrqpglgvrjsnsprvwszmlrjcdgzwchmcqrjdlzqfvqwwfszpptprhcfsdfcrnhvhgvcdwgnqzjtmgznltbjjqwzlljrqcmpdncshzvsmvjwlmvtwbtjcgmqfslvwcfqpljzdjmdvqjlztbsbshcwhlvzcmzljvrrhrbzwvthgtnszpcrrdwcmtdncdzlbdscfbhrlqttcfshqrsgvzhlcnvfhppdqvblsznmctftmnslwgbmbgshgwvmzpdnmqmjgqnvrwprmbzrdprrbcwnslczvzgnssjqqzdrlntrnsrgbjjcpqvnqwvnwgslchqzbphcqsbvgvwzlnsndfrhqjvtlnqpcsgswzfvhjmfgwgfvhjgzntdbztmjsbmtwlfmvvgvztvwwmqclcgctqbvljgfngcvfqlmmvqmbtrnnbhqjjndzqhvvdztjgvwgrtltfrlzrjcpgwvpqwmcwmqccjtjhhbrrqphlpljvhjzpdfcdsgzfpnzdzhfdqjsnrvmwstrmmwmlhbvrjbtnmvwcqnzqzzpwzjdnfhqwwlsvgnnjgffzcnrtbjfwllnrgppchqwnfpwpgnfbvwcbjrlscnwlswjmnrcrhtdhgpzvgtfcqzgqtwvlhrgbmjvvzhrlzfvmrdjjctvfwsgmjwbqslhmjlcvlwrdqfmbhcfrmrvqtslplwpsgrfmntmtvmvqttbspmftgqdzlcfplcvvfmmjttwqjpdtjzzsfjcprvbwdvfrpzddhwrlmsnpjzqgdlfdzvdjnjtgtfflzzvjlmnnvmglrptsnppwscznltcvzfjmwshnsqsvsjpqwsqlbwzslhgrdcbbvcjspqfntbcpwwrphgpmwbpqdcfvvtlsgpfshtcrdftsltwnbnmzfwcwlmrhlntmmnnpsdchvntcwbnmjdgwcmzzvbrhbdbmlgwppzwsqvcccdbfzfsfhtmbppnwbtjvrvjtmddhmrjdqgnmrnjjpqsgtbgcvtclzzstlpldtqbnnvqjfbjcfzblvcwhjphzcgwfljjhzzmwdcrzsssznztcwpjlbcffnlmsfjbmtvhhcljmtqdprdmdgwgpnnlmhgwpsgprfqnspmntrdjwjmrflsbfpqhzswbsrdbdhjmvtwmjjnmpllgfllzgwwmswjcmggbrvsbbhjmsdzzpbhbrlphwdsmjdzsqjfrmdmpljnwscjrhdvzqbhhvpmhwqfrrhzlncrrrzhmjdwqjcbsqjbhbdbjzpslrnnbzctnnlhqmqqbdzfbrpfgwsrdglnplpspnnqhtbhzhzgtchcbqcmmcmvlllczqbtmbstzmnlhhhbmmbtjwnbgwjbfhgvfhqlsgdnnrsgghjzjlqfwbbgztdqzbhhwhcwtjwsgstjpzcjjvqbpfpvlqfqshvfzbwmfcwfgqvgmbppfvzgzznzhsqbvzlztsnmnrbgqzbmbhlvqhfncdfcpttgzpvvzdbhvqdtqsblqvrsrnmsfbqhrpvlzffdzptzghvmbmdzjrsqzhqddqm"));
+}
+
+/*
+Your device's communication system is correctly detecting packets, but still isn't working. It looks like it also needs to look for messages.
+
+A start-of-message marker is just like a start-of-packet marker, except it consists of 14 distinct characters rather than 4.
+
+Here are the first positions of start-of-message markers for all of the above examples:
+
+    mjqjpqmgbljsphdztnvjfqwrcgsmlb: first marker after character 19
+    bvwbjplbgvbhsrlpgdmjqwftvncz: first marker after character 23
+    nppdvjthqldpwncqszvftbrmjlhg: first marker after character 23
+    nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg: first marker after character 29
+    zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw: first marker after character 26
+
+How many characters need to be processed before the first start-of-message marker is detected?
+*/
